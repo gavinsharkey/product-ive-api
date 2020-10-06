@@ -5,3 +5,12 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+u = User.first
+
+5.times do
+  tg = u.task_groups.create(name: Faker::Job.title)
+  u.ungrouped_tasks.create(name: Faker::Food.dish)
+  5.times do
+    tg.tasks.create(name: Faker::Food.dish)
+  end
+end
