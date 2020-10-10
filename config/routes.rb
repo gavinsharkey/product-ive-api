@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :tasks, only: [:index, :update]
+  resources :tasks, only: [:index, :update, :destroy]
   resources :task_groups, only: [:index]
   post '/login', to: 'auth#login'
   post '/signup', to: 'users#create'
