@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :require_login
-  before_action :set_task, only: [:update]
+  before_action :set_task, only: [:update, :destroy]
 
   def index
     if params[:taskable_id]
@@ -19,10 +19,19 @@ class TasksController < ApplicationController
     end
   end
 
+  def destroy
+    @task.destroy
+    if @task.destroyed?
+      render json: { destroyed: true }, status: :ok
+    else
+      render json: { destroyed: false }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_task
-    @task = self.current_user.grouped_tasks.find_by(id: params[:id])
+    @task = self.current_user.all_tasks.find_by(id: params[:id])
     render json: { errors: ['Unauthorized access: Not Your Resource'] } if !@task
   end
 
