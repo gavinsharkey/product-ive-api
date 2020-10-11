@@ -2,7 +2,7 @@ class TaskGroupsController < ApplicationController
   before_action :require_login
 
   def index
-    @task_groups = current_user.task_groups
+    @task_groups = current_user.task_groups.order(created_at: :desc)
     render json: @task_groups
   end
 
