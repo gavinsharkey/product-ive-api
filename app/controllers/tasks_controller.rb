@@ -11,6 +11,22 @@ class TasksController < ApplicationController
     render json: @tasks, include: [:taskable]
   end
 
+  def create
+    if params[:taskable_id]
+      # Applying the params at a low level avoids having to first find the TaskGroup
+      with_taskable = task_params.merge({ taskable_id: params[:taskable_id], taskable_type: 'TaskGroup' })
+      @task = Task.new(with_taskable)
+    else
+      @task = self.current_user.ungrouped_tasks.build(task_params)
+    end
+    
+    if @task.save
+      render json: @task, include: [:taskable]
+    else
+      render json: { errors: @task.errors.full_messages }
+    end
+  end
+
   def update
     if @task.update(task_params)
       render json: @task, include: [:taskable]
