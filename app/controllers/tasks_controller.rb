@@ -4,7 +4,7 @@ class TasksController < ApplicationController
 
   def index
     if params[:taskable_id]
-      @tasks = self.current_user.grouped_tasks.where(taskable_id: params[:taskable_id])
+      @tasks = self.current_user.grouped_tasks.where(taskable_id: params[:taskable_id]).order(created_at: :desc)
     else
       @tasks = self.current_user.all_tasks
     end
