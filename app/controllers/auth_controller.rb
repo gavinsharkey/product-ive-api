@@ -12,9 +12,9 @@ class AuthController < ApplicationController
 
   def is_logged_in?
     if logged_in?
-      render json: session_user
+      render json: { user: session_user, logged_in: true }
     else
-      render json: { errors: 'No Logged In User' }
+      render json: { logged_in: false }
     end
   end
 end
