@@ -15,6 +15,17 @@ class TaskGroupsController < ApplicationController
     end
   end
 
+  def destroy
+    @task_group = current_user.task_groups.find_by(id: params[:id])
+
+    @task_group.destroy
+    if @task_group.destroyed?
+      render json: { destroyed: true }, status: :ok
+    else
+      render json: { destroyed: false }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def task_group_params
