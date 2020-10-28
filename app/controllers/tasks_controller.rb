@@ -5,6 +5,8 @@ class TasksController < ApplicationController
   def index
     if params[:taskable_id]
       @tasks = self.current_user.grouped_tasks.where(taskable_id: params[:taskable_id]).order(created_at: :desc)
+    elsif params[:task_id]
+      @tasks = Task.where(parent_task_id: params[:task_id])
     else
       @tasks = self.current_user.all_tasks
     end
@@ -16,6 +18,13 @@ class TasksController < ApplicationController
       # Applying the params at a low level avoids having to first find the TaskGroup
       with_taskable = task_params.merge({ taskable_id: params[:taskable_id], taskable_type: 'TaskGroup' })
       @task = Task.new(with_taskable)
+    elsif params[:task_id]
+      task_id = params[:task_id]
+      if Task.exists?(task_id)
+        @task = Task.new(task_params.merge({ parent_task_id: task_id }))
+      else
+        render json: { error: 'Parent Resource Not Found' }, status: :not_found
+      end
     else
       @task = self.current_user.ungrouped_tasks.build(task_params)
     end
@@ -47,7 +56,11 @@ class TasksController < ApplicationController
   private
 
   def set_task
-    @task = self.current_user.all_tasks.find_by(id: params[:id])
+    if params[:task_id]
+      @task = Task.find_by(parent_task_id: params[:task_id], id: params[:id])
+    else
+      @task = self.current_user.all_tasks.find_by(id: params[:id])
+    end
     render json: { errors: ['Unauthorized access: Not Your Resource'] } if !@task
   end
 
