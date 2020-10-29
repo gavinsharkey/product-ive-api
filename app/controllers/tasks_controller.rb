@@ -56,12 +56,8 @@ class TasksController < ApplicationController
   private
 
   def set_task
-    if params[:task_id]
-      @task = Task.find_by(parent_task_id: params[:task_id], id: params[:id])
-    else
-      @task = self.current_user.all_tasks.find_by(id: params[:id])
-    end
-    render json: { errors: ['Unauthorized access: Not Your Resource'] } if !@task
+    @task = Task.find_by(id: params[:id])
+    render json: { error: 'Resource Not Found' }, status: :not_found if !@task
   end
 
   def task_params
