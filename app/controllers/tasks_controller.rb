@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :require_login
+  # before_action :require_login
   before_action :set_task, only: [:update, :destroy]
 
   def index
@@ -8,7 +8,7 @@ class TasksController < ApplicationController
     else
       @tasks = self.current_user.all_tasks
     end
-    render json: @tasks, include: [:taskable]
+    render json: @tasks, include: [:taskable, :sub_tasks]
   end
 
   def create
