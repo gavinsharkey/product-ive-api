@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :note_groups
+  resources :notes
   resources :tasks, only: [:index, :create, :update, :destroy] do
     resources :sub_tasks, only: [:index, :create]
   end
